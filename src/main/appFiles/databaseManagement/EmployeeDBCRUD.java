@@ -18,7 +18,7 @@ public class EmployeeDBCRUD {
 			pstmt.executeUpdate();
 			employee.employeeRefresh();
 		} catch (SQLException e) {
-			System.out.print("Connection error: " + e.getMessage());
+			System.out.println("Connection error 1: " + e.getMessage());
 			e.getStackTrace();
 		}
 	}
@@ -31,7 +31,59 @@ public class EmployeeDBCRUD {
 			pstmt.executeUpdate();
 			System.out.println("User Successfully deleted");
 		} catch (SQLException e) {
-			System.out.print("Connection error: " + e.getMessage());
+			System.out.print("Connection error 2: " + e.getMessage());
+			e.getStackTrace();
+		}
+	}
+	
+	public static void editEmployee(Employee updatedEmployee) {
+		String employeeUpd = "UPDATE employees SET"
+				+ " first_name = COALESCE(?, first_name),"
+				+ " last_name = COALESCE(?, last_name),"
+				+ " school_id = COALESCE(?, school_id),"
+				+ " email = COALESCE(?, email),"
+				+ " phone_number = COALESCE(?, phone_number),"
+				+ " title = COALESCE(?, title)"
+				+ " WHERE employee_id = ?";
+		try (Connection conn = DbConnection.getConnection()){
+			var pstmt = conn.prepareStatement(employeeUpd);
+			pstmt.setString(1, updatedEmployee.getFName());
+			pstmt.setString(2, updatedEmployee.getLName());
+			pstmt.setString(3, updatedEmployee.getSchoolId());
+			pstmt.setString(4, updatedEmployee.getEmail());
+			pstmt.setString(5, updatedEmployee.getPhoneNum());
+			pstmt.setString(6, updatedEmployee.getTitle());
+			pstmt.setInt(7, updatedEmployee.getEmployeeId());
+			
+			int changedRows = pstmt.executeUpdate();
+			if (changedRows > 0) {
+				System.out.println("Employee info updated");
+				updatedEmployee.employeeRefresh();
+			}else {
+				System.out.print("Employee not found");
+			}
+		}catch (SQLException e) {
+			System.out.println("Error updating user: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	public static void getEmployee(int employeeId) {
+		String tableQuery = "SELECT employee_id, first_name, last_name, school_id, email, phone_number, title FROM employees WHERE employee_id = ?";
+		try (var conn = DbConnection.getConnection()){
+			var stmt = conn.createStatement();
+			var query = stmt.executeQuery(tableQuery);
+			System.out.printf("%-5s%-10s%-10s%-10s%-35s%-15s%-10s%n",
+					query.getInt("employee_id"),
+					query.getString("first_name"),
+					query.getString("last_name"),
+					query.getString("school_id"),
+					query.getString("email"),
+					query.getString("phone_number"),
+					query.getString("title")
+				);
+		} catch (SQLException e){
+			System.out.print("Connection Error 3: " + e.getMessage());
 			e.getStackTrace();
 		}
 	}

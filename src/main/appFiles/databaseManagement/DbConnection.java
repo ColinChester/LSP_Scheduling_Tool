@@ -13,16 +13,15 @@ public class DbConnection {
 	    	try {
 		        var url = DbConnection.class.getResource("/ScheduleInfo.sqlite");
 		        if (url == null) {
-		        	System.out.print("Could not find file.");
+		        	System.err.println("Could not find file.");
 		        	return conn;
 		        }
 		        var dbFile = new File(url.toURI());
 		        var path = "jdbc:sqlite:" + dbFile.getAbsolutePath();
 		        conn = DriverManager.getConnection(path);
-		        System.out.print("Connection has been established");
 		        
 		    } catch (URISyntaxException | SQLException e) { // As suggested by Eclipse
-		    	System.out.print("URI Error: " + e.getMessage());
+		    	System.err.print("URI Error: " + e.getMessage());
 				e.getStackTrace();
 		    }
 			return conn;

@@ -11,7 +11,7 @@ public class TableReader {// Test resource, https://www.sqlitetutorial.net/sqlit
 			var query = stmt.executeQuery(tableQuery);
 			
 			while (query.next()) {
-				System.out.printf("%-5s%-10s%-10s%-10s%-25s%-15s%-10s%n",
+				System.out.printf("%-5s%-10s%-10s%-10s%-35s%-15s%-10s%n",
 						query.getInt("employee_id"),
 						query.getString("first_name"),
 						query.getString("last_name"),
@@ -22,7 +22,7 @@ public class TableReader {// Test resource, https://www.sqlitetutorial.net/sqlit
 					);
 			}
 		} catch (SQLException e) {
-			System.out.print("Connection error: " + e.getMessage());
+			System.err.print("Connection error 4: " + e.getMessage());
 			e.getStackTrace();
 		}
 	}

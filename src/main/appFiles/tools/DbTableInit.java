@@ -8,7 +8,7 @@ public class DbTableInit { // https://www.sqlitetutorial.net/sqlite-java/create-
 	public static void employeeTableInit() {
 		try(Connection conn = DbConnection.getConnection()){
 			if (conn == null) {
-				System.out.print("connection error");
+				System.err.print("connection error 5 (init)");
 				return;
 			}
 			String tableInit = "CREATE TABLE IF NOT EXISTS employees ("
@@ -23,15 +23,15 @@ public class DbTableInit { // https://www.sqlitetutorial.net/sqlite-java/create-
 			
 			try (var stmt = conn.createStatement()){
 				stmt.execute(tableInit);
-				System.out.print("Created/Verified employee table");
+				System.out.println("Employee table startup successful");
 			} catch (SQLException e) {
-				System.out.print("Error creating Employee Table: " + e.getMessage());
+				System.err.println("Error creating Employee Table: " + e.getMessage());
 				e.getStackTrace();
 			}
 		} catch (SQLException e) {
-			System.out.print("Connection Error: " + e.getMessage());
+			System.err.println("Connection Error 6: " + e.getMessage());
 			e.getStackTrace();
 		}
 	}
 }
-// Implement for schedule table
+// TODO Implement for schedule table

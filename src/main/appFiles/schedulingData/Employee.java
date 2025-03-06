@@ -22,6 +22,16 @@ public class Employee {
 		this.title = title;
 	}
 	
+	public Employee(int employeeId, String fName, String lname, String schoolId, String email, String phoneNum, String title) {
+		this.employeeId = employeeId;
+		this.fName = fName;
+		this.lName = lname;
+		this.schoolId = schoolId;
+		this.email = email;
+		this.phoneNum = phoneNum;
+		this.title = title;
+	}
+	
 	public String getFName() {
 		return fName;
 	}
@@ -61,17 +71,15 @@ public class Employee {
 	public int getEmployeeId() {
 		return employeeId;
 	}
-	public void setEmployeeId(int employeeId) {
-		this.employeeId = employeeId;
-	}
 	public void employeeRefresh() {
-	    String tableQuery = "SELECT first_name, last_name, school_id, email, phone_number, title FROM employees WHERE school_id = ?";
+	    String tableQuery = "SELECT employee_id, first_name, last_name, school_id, email, phone_number, title FROM employees WHERE employee_id = ?";
 	    try (var conn = DbConnection.getConnection();
 	         var pstmt = conn.prepareStatement(tableQuery)) {
-	         pstmt.setString(1, this.schoolId);
+	         pstmt.setInt(1, this.employeeId);
 	         
 	         try (var query = pstmt.executeQuery()) {
 	             if (query.next()) {
+	            	 this.employeeId = query.getInt("employee_id");
 	                 this.fName = query.getString("first_name");
 	                 this.lName = query.getString("last_name");
 	                 this.schoolId = query.getString("school_id");
@@ -79,11 +87,11 @@ public class Employee {
 	                 this.phoneNum = query.getString("phone_number");
 	                 this.title = query.getString("title");
 	             } else {
-	                 System.out.println("No record found for school_id " + this.schoolId);
+	                 System.out.println("No record found for employee ID " + this.employeeId);
 	             }
 	         }
 	    } catch (SQLException e) {
-	         System.err.println("Error updating employee: " + e.getMessage());
+	         System.err.println("Error refreshing employee: " + e.getMessage());
 	         e.printStackTrace();
 	    }
 	}
