@@ -1,10 +1,12 @@
 package main.appFiles.schedulingData;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.sql.ResultSet;
 
 import main.appFiles.databaseManagement.DbConnection;
 
-public class Employee {
+public class Employee { // TODO Add availability constructor (possibly code based ex. M940A334P)
 	private String fName;
 	private String lName;
 	private String schoolId;
@@ -12,6 +14,7 @@ public class Employee {
 	private String phoneNum;
 	private String title;
 	private int employeeId;
+	private ArrayList<Availability> availability = new ArrayList<>();
 	
 	public Employee(String fName, String lname, String schoolId, String email, String phoneNum, String title) {
 		this.fName = fName;
@@ -31,7 +34,7 @@ public class Employee {
 		this.phoneNum = phoneNum;
 		this.title = title;
 	}
-	
+
 	public String getFName() {
 		return fName;
 	}
@@ -71,6 +74,26 @@ public class Employee {
 	public int getEmployeeId() {
 		return employeeId;
 	}
+	public void setEmployeeId(int employeeId) {
+		this.employeeId = employeeId;
+	}
+	public void addAvailability(Availability a) {
+		this.availability.add(a);
+	}
+	public void printAvailability() {
+		for (int i = 0; i < this.availability.size(); i++) {
+			this.availability.get(i).toString();
+		}
+	}
+	public void delAvailability(int availabilityId) {
+		for (int i = 0; i < this.availability.size(); i++) {
+			int checkId = this.availability.get(i).getAvailabilityId();
+			if (checkId == availabilityId) {
+				this.availability.remove(i);
+			}
+		}
+	}
+	
 	public void employeeRefresh() {
 	    String tableQuery = "SELECT employee_id, first_name, last_name, school_id, email, phone_number, title FROM employees WHERE employee_id = ?";
 	    try (var conn = DbConnection.getConnection();

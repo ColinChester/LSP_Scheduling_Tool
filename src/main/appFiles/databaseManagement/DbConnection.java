@@ -19,7 +19,9 @@ public class DbConnection {
 		        var dbFile = new File(url.toURI());
 		        var path = "jdbc:sqlite:" + dbFile.getAbsolutePath();
 		        conn = DriverManager.getConnection(path);
-		        
+		        try (var stmt = conn.createStatement()){
+		        	stmt.execute("PRAGMA foreign_keys = ON;");
+		        }
 		    } catch (URISyntaxException | SQLException e) { // As suggested by Eclipse
 		    	System.err.print("URI Error: " + e.getMessage());
 				e.getStackTrace();

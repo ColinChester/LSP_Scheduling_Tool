@@ -5,14 +5,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DbTableInit { // https://www.sqlitetutorial.net/sqlite-java/create-table/
-	public static void employeeTableInit() {
+	public static void TableInit() {
 		try(Connection conn = DbConnection.getConnection()){
 			if (conn == null) {
 				System.err.print("connection error 5 (init)");
 				return;
 			}
-			String tableInit = "CREATE TABLE IF NOT EXISTS employees ("
-					+ " employee_id INTEGER PRIMARY KEY,"
+			String employeeTableInit = "CREATE TABLE IF NOT EXISTS employees ("
+					+ " employee_id INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ " first_name TEXT NOT NULL,"
 					+ " last_name TEXT NOT NULL,"
 					+ " school_id TEXT NOT NULL UNIQUE,"
@@ -21,11 +21,26 @@ public class DbTableInit { // https://www.sqlitetutorial.net/sqlite-java/create-
 					+ " title TEXT"
 					+ " );";
 			
+			String availabilityTableInit = "CREATE TABLE IF NOT EXISTS availability ("
+					+ " availability_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ " employee_id INTEGER NOT NULL,"
+					+ " day_of_week TEXT NOT NULL,"
+					+ " start_time TEXT NOT NULL,"
+					+ " end_time TEXT NOT NULL,"
+					+ " FOREIGN KEY (employee_id) REFERENCES employees (employee_id)"
+					+ " );";
 			try (var stmt = conn.createStatement()){
-				stmt.execute(tableInit);
+				stmt.execute(employeeTableInit);
 				System.out.println("Employee table startup successful");
 			} catch (SQLException e) {
 				System.err.println("Error creating Employee Table: " + e.getMessage());
+				e.getStackTrace();
+			}
+			try (var stmt = conn.createStatement()){
+				stmt.execute(availabilityTableInit);
+				System.out.println("Availability table startup successful");
+			} catch (SQLException e) {
+				System.err.println("Error creating Availability table: " + e.getMessage());
 				e.getStackTrace();
 			}
 		} catch (SQLException e) {
@@ -34,4 +49,3 @@ public class DbTableInit { // https://www.sqlitetutorial.net/sqlite-java/create-
 		}
 	}
 }
-// TODO Implement for schedule table
