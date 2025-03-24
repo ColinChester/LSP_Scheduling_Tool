@@ -1,0 +1,21 @@
+To-Do List
+
+Priority
+- Make availability variable a map instead of Arraylist
+- Implement schedule sql table
+- Implement scheduling Algorithm
+- Create Javadocs
+
+Non-Priority
+- DAO for Employee, Availability, and Schedule
+- Create a class/method to handle the shared opening of connections/preparation of statements etc.
+- Implement more data validation in Availability
+- Use JUnit for debugging
+
+Java object > table init > table crud > further implementation
+
+Schedule
+- Method Given hours of operation, days in operation, jumps in schedule (How large each row is), returns sql statement
+
+Changes
+- removed link to class in CRUD methods to more closely follow DAO

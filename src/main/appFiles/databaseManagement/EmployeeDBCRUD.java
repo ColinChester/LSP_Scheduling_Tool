@@ -70,7 +70,6 @@ public class EmployeeDBCRUD {
 			int changedRows = pstmt.executeUpdate();
 			if (changedRows > 0) {
 				System.out.println("Employee info updated");
-				updatedEmployee.employeeRefresh();
 			}else {
 				System.out.println("Employee not found");
 			}
