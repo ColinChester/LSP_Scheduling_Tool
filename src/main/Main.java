@@ -1,8 +1,11 @@
 package main;
 
+import java.util.ArrayList;
+
 import main.appFiles.databaseManagement.*;
 import main.appFiles.tools.*;
 import main.appFiles.schedulingData.Employee;
+import main.appFiles.schedulingData.Schedule;
 import main.appFiles.schedulingData.Availability;
 
 public class Main {
@@ -10,7 +13,6 @@ public class Main {
         DbConnection.connect();
         DbTableInit.TableInit();
         
-        // Create employee objects.
         Employee e1 = new Employee("Colon", "Chestnut", "003002001", "colon@gmail.com", "9005476383", "security analyst");
         Employee e2 = new Employee("Test", "Dummy", "000000", "imnotreal@gmail.com", "1234567890", "john doe enthusiast");
         Employee e3 = new Employee("Bob", "Johnson", "001000002", "bob.johnson@example.com", "5552223333", "project manager");
@@ -25,7 +27,6 @@ public class Main {
         
         TableReader.readEmployeeTable();
         
-        // Add availabilities using the new method.
         e1.addAvailability("MONDAY", "08:00", "12:00");
         e1.addAvailability("MONDAY", "13:00", "17:00");
         e1.addAvailability("TUESDAY", "09:00", "14:00");
@@ -46,7 +47,6 @@ public class Main {
         e5.addAvailability("THURSDAY", "11:00", "13:00");
         e5.addAvailability("FRIDAY", "07:00", "12:00");
         
-        // Insert each employee's availabilities into the database.
         for (Availability avail : e1.getAvailabilities().values()) {
             AvailabilityDBCRUD.addAvailability(e1.getEmployeeId(), avail);
         }
@@ -63,7 +63,18 @@ public class Main {
             AvailabilityDBCRUD.addAvailability(e5.getEmployeeId(), avail);
         }
         
+        
         TableReader.readAvailabilityTable();
+        
+        ArrayList<Employee> eList = new ArrayList<>();
+        eList.add(e1);
+        eList.add(e2);
+        eList.add(e3);
+        eList.add(e4);
+        eList.add(e5);
+        
+        Schedule s = new Schedule("09:10", "14:36", eList);
+        
         ClearTables.clearAllTables();
     }
 }

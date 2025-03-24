@@ -2,6 +2,7 @@ To-Do List
 
 Priority
 - Make availability variable a map instead of Arraylist
+	- Add get/set for day
 - Implement schedule sql table
 - Implement scheduling Algorithm
 - Create Javadocs

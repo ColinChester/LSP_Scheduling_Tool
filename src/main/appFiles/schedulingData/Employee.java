@@ -121,4 +121,9 @@ public class Employee {
              e.printStackTrace();
         }
     }
+    
+    @Override
+    public String toString() {
+    	return this.fName + " " + this.lName + " " + this.schoolId + " " + this.email + " " + this.phoneNum + " " + this.title + " " + this.employeeId + " " + this.availabilities;
+    }
 }
