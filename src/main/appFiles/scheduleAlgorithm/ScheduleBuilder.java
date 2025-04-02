@@ -18,9 +18,6 @@ public class ScheduleBuilder {
 	    // Load OR-Tools native libraries.
 		Loader.loadNativeLibraries();
 		        
-		//Load OR-Tools native libraries.
-		Loader.loadNativeLibraries();
-		
 		// Retrieve the scheduling period from the Schedule object.
 		LocalTime startTime = s.getStartTime();
 		LocalTime endTime = s.getEndTime();

@@ -2,6 +2,7 @@ package main.appFiles.databaseManagement;
 
 import java.sql.SQLException;
 
+import main.appFiles.scheduleAlgorithm.Shift;
 import main.appFiles.schedulingData.Schedule;
 
 public class ScheduleDBCRUD {
@@ -23,4 +24,23 @@ public class ScheduleDBCRUD {
             e.printStackTrace();
         }
     }
+	
+	public static void addShifts(Schedule s) {
+	    String shiftAdd = "INSERT INTO " + s.getTableName() +
+	                 " (employee_id, day_of_week, shift_start, shift_end) VALUES (?, ?, ?, ?)";
+	    try (var conn = DbConnection.getConnection()) {
+	        for (Shift shift : s.getShifts()) {
+	            try (var pstmt = conn.prepareStatement(shiftAdd)) {
+	            	pstmt.setInt(1, shift.getEmployeeid());
+	                pstmt.setString(2, shift.getDay().toString());
+	                pstmt.setString(3, shift.getStart().toString());
+	                pstmt.setString(4, shift.getEnd().toString());
+	                pstmt.executeUpdate();
+	            }
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("Error inserting shifts: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	}
 }

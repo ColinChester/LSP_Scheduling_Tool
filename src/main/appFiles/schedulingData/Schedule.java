@@ -33,6 +33,7 @@ public class Schedule {
     
     private void generateSchedule() {
         ScheduleBuilder.scheduleBuild(this);
+        ScheduleDBCRUD.addShifts(this);
     }
 
 	public LocalTime getStartTime() {
@@ -61,6 +62,10 @@ public class Schedule {
 
 	public void setEmployees(ArrayList<Employee> employees) {
 		this.employees = employees;
+	}
+	
+	public List<Shift> getShifts(){
+		return schedule;
 	}
 	
 	public void setShifts(List<Shift> shifts) {
