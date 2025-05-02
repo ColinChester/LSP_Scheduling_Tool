@@ -1,9 +1,8 @@
-package main.appFiles.tools;
+package main.appFiles.databaseManagement;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import main.appFiles.databaseManagement.*;
 public class ClearTables {
 	public static void clearAllTables() {
 		String clearAvailability = "DELETE From availability";

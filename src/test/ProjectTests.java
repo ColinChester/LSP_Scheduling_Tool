@@ -15,8 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import main.appFiles.databaseManagement.AvailabilityDBCRUD;
+import main.appFiles.databaseManagement.ClearTables;
 import main.appFiles.databaseManagement.DbConnection;
-import main.appFiles.tools.DbTableInit;
+import main.appFiles.databaseManagement.DbTableInit;
 import main.appFiles.databaseManagement.EmployeeDBCRUD;
 import main.appFiles.databaseManagement.ScheduleDBCRUD;
 import main.appFiles.scheduleAlgorithm.ScheduleBuilder;
@@ -26,7 +27,6 @@ import main.appFiles.schedulingData.Employee;
 import main.appFiles.schedulingData.Schedule;
 import main.appFiles.schedulingData.TimeRange;
 import main.appFiles.tools.CSVConverter;
-import main.appFiles.tools.ClearTables;
 
 public class ProjectTests {
 
@@ -48,7 +48,7 @@ public class ProjectTests {
     @Test
     void testAddAndGetEmployee() {
         Employee e = new Employee("John", "Doe", "S123", "john@example.com", "555-1234", "Worker");
-        EmployeeDBCRUD.addEmployee(e);
+        EmployeeDBCRUD.addEmployeeDb(e);
         assertTrue(e.getEmployeeId() > 0, "Employee ID should be set after insertion");
         
         try (Connection conn = DbConnection.getConnection();
@@ -65,7 +65,7 @@ public class ProjectTests {
     @Test
     void testEditEmployee() {
         Employee e = new Employee("John", "Doe", "S123", "john@example.com", "555-1234", "Worker");
-        EmployeeDBCRUD.addEmployee(e);
+        EmployeeDBCRUD.addEmployeeDb(e);
         e.setFName("Jane");
         EmployeeDBCRUD.editEmployee(e);
         
@@ -83,7 +83,7 @@ public class ProjectTests {
     @Test
     void testDeleteEmployee() {
         Employee e = new Employee("John", "Doe", "S123", "john@example.com", "555-1234", "Worker");
-        EmployeeDBCRUD.addEmployee(e);
+        EmployeeDBCRUD.addEmployeeDb(e);
         EmployeeDBCRUD.delEmployee(e);
         
         try (Connection conn = DbConnection.getConnection();
@@ -100,12 +100,12 @@ public class ProjectTests {
     void testAddAvailability() {
         // Add an employee first.
         Employee e = new Employee("Alice", "Smith", "S124", "alice@example.com", "555-5678", "Manager");
-        EmployeeDBCRUD.addEmployee(e);
+        EmployeeDBCRUD.addEmployeeDb(e);
         
         // Create an availability for Monday.
         Availability availability = new Availability("MONDAY");
         availability.addTimeRange("09:00", "17:00");
-        int availId = AvailabilityDBCRUD.addAvailability(e.getEmployeeId(), availability);
+        int availId = AvailabilityDBCRUD.addAvailabilityDb(e.getEmployeeId(), availability);
         assertTrue(availId > 0, "Availability ID should be greater than 0");
         
         try (Connection conn = DbConnection.getConnection();
@@ -122,11 +122,11 @@ public class ProjectTests {
     @Test
     void testEditAvailability() {
         Employee e = new Employee("Alice", "Smith", "S124", "alice@example.com", "555-5678", "Manager");
-        EmployeeDBCRUD.addEmployee(e);
+        EmployeeDBCRUD.addEmployeeDb(e);
         
         Availability availability = new Availability("MONDAY");
         availability.addTimeRange("09:00", "17:00");
-        int availId = AvailabilityDBCRUD.addAvailability(e.getEmployeeId(), availability);
+        int availId = AvailabilityDBCRUD.addAvailabilityDb(e.getEmployeeId(), availability);
         
         // Edit availability to new time range.
         Availability newAvailability = new Availability("MONDAY");
@@ -148,11 +148,11 @@ public class ProjectTests {
     @Test
     void testDeleteAvailability() {
         Employee e = new Employee("Alice", "Smith", "S124", "alice@example.com", "555-5678", "Manager");
-        EmployeeDBCRUD.addEmployee(e);
+        EmployeeDBCRUD.addEmployeeDb(e);
         
         Availability availability = new Availability("MONDAY");
         availability.addTimeRange("09:00", "17:00");
-        int availId = AvailabilityDBCRUD.addAvailability(e.getEmployeeId(), availability);
+        int availId = AvailabilityDBCRUD.addAvailabilityDb(e.getEmployeeId(), availability);
         
         AvailabilityDBCRUD.delAvailability(availId);
         try (Connection conn = DbConnection.getConnection();
@@ -187,8 +187,8 @@ public class ProjectTests {
         ArrayList<Employee> employees = new ArrayList<>();
         Employee e1 = new Employee("John", "Doe", "S100", "john@example.com", "555-0000", "Staff");
         Employee e2 = new Employee("Jane", "Doe", "S101", "jane@example.com", "555-1111", "Staff");
-        EmployeeDBCRUD.addEmployee(e1);
-        EmployeeDBCRUD.addEmployee(e2);
+        EmployeeDBCRUD.addEmployeeDb(e1);
+        EmployeeDBCRUD.addEmployeeDb(e2);
         employees.add(e1);
         employees.add(e2);
         
@@ -206,32 +206,6 @@ public class ProjectTests {
         } catch (SQLException ex) {
             fail("SQLException occurred: " + ex.getMessage());
         }
-    }
-    
-    @Test
-    void testCSVConverter() throws IOException {
-        String csvContent = "Alice,Smith,S102,alice@company.com,555-2222,Manager\n" +
-                            "Bob,Johnson,S103,bob@company.com,555-3333,Staff";
-        File tempFile = File.createTempFile("test", ".csv");
-        try (FileWriter writer = new FileWriter(tempFile)) {
-            writer.write(csvContent);
-        }
-        
-        // Clear and reinitialize the employees table.
-        ClearTables.clearAllTables();
-        DbTableInit.TableInit();
-        CSVConverter.readFile(tempFile);
-        
-        try (Connection conn = DbConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement("SELECT COUNT(*) AS count FROM employees")) {
-            ResultSet rs = pstmt.executeQuery();
-            assertTrue(rs.next(), "Result set should not be empty");
-            int count = rs.getInt("count");
-            assertEquals(2, count, "CSVConverter should add 2 employees");
-        } catch (SQLException ex) {
-            fail("SQLException occurred: " + ex.getMessage());
-        }
-        tempFile.delete();
     }
 
     @Test

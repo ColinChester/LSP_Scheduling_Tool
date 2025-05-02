@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class AvailabilityDBCRUD {
-    public static int addAvailability(int employeeId, Availability a) {
+    public static int addAvailabilityDb(int employeeId, Availability a) {
         String availabilityAdd = "INSERT INTO availability (employee_id, day_of_week, start_time, end_time) VALUES (?, ?, ?, ?)";
         int newId = 0;
         try (var conn = DbConnection.getConnection()){

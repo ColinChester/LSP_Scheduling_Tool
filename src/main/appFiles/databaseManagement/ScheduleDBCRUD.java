@@ -1,6 +1,12 @@
 package main.appFiles.databaseManagement;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.*;
 
 import main.appFiles.scheduleAlgorithm.Shift;
 import main.appFiles.schedulingData.Schedule;
@@ -43,4 +49,46 @@ public class ScheduleDBCRUD {
 	        e.printStackTrace();
 	    }
 	}
+	
+	public static List<String> listScheduleTables() {
+        List<String> tables = new ArrayList<>();
+        String schedule = "SELECT name FROM sqlite_master "
+                   + "WHERE type='table' AND name LIKE 'schedule_%';";
+        try (Connection conn = DbConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(schedule)) {
+
+            while (rs.next()) {
+                tables.add(rs.getString("name"));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error listing schedule tables: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return tables;
+    }
+	
+	public static List<Shift> getShiftsFromTable(String tableName) {
+        List<Shift> shifts = new ArrayList<>();
+        String schedule = "SELECT employee_id, day_of_week, shift_start, shift_end "
+                   + "FROM " + tableName + ";";
+
+        try (Connection conn = DbConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(schedule)) {
+            while (rs.next()) {
+                int empId = rs.getInt("employee_id");
+                DayOfWeek day = DayOfWeek.valueOf(rs.getString("day_of_week"));
+                LocalTime start = LocalTime.parse(rs.getString("shift_start"));
+                LocalTime end   = LocalTime.parse(rs.getString("shift_end"));
+                shifts.add(new Shift(empId, day, start, end));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error loading shifts from " + tableName + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+        return shifts;
+    }
 }

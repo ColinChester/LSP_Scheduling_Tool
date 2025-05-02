@@ -1,6 +1,5 @@
-package main.appFiles.tools;
+package main.appFiles.databaseManagement;
 
-import main.appFiles.databaseManagement.DbConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
 

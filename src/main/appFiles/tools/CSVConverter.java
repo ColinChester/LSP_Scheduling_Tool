@@ -1,30 +1,34 @@
 package main.appFiles.tools;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import main.appFiles.schedulingData.Employee;
-import main.appFiles.databaseManagement.*;
 
 public class CSVConverter {
-	public static void readFile(File csv) { // I repurposed the ReadFile class from https://www.w3schools.com/java/java_files_read.asp
-		try { // TODO Add input validation to ensure import goes well
-			Scanner sc = new Scanner(csv);
-			while (sc.hasNextLine()) {
-				String line = sc.nextLine();
-				String[] lineList = line.split(",");
-				if (lineList.length == 6) {
-					Employee e = new Employee(lineList[0], lineList[1], lineList[2], lineList[3], lineList[4], lineList[5]);
-					EmployeeDBCRUD.addEmployee(e);
-				}else {
-					System.out.print("Invalid line: " + line);
-					continue;
-				}
-			}
-			sc.close();
-		} catch (FileNotFoundException e) {
-			System.err.println("File not found.");
-			e.printStackTrace();
-		}
-	}
+    
+    public List<Employee> readFile(String filePath) throws IOException {
+        List<Employee> employees = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty() || line.startsWith("#")) {
+                	continue;
+                }
+                String[] parts = line.split(",");
+                String fName = parts[0].trim();
+                String lName = parts[1].trim();
+                String schoolId = parts[2].trim();
+                String email = parts[3].trim();
+                String phoneNum = parts[4].trim();
+                String title = parts[5].trim();
+                Employee emp = new Employee(fName, lName, schoolId, email, phoneNum, title);
+                employees.add(emp);
+            }
+        }
+        return employees;
+    }
 }

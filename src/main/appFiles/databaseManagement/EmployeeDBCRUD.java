@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 
 public class EmployeeDBCRUD {
-	public static void addEmployee(Employee employee) {
+	public static void addEmployeeDb(Employee employee) {
         String employeeAdd = "INSERT INTO employees (first_name, last_name, school_id, email, phone_number, title) VALUES (?, ?, ?, ?, ?, ?)";
         try (var conn = DbConnection.getConnection();
              var pstmt = conn.prepareStatement(employeeAdd, Statement.RETURN_GENERATED_KEYS)) {

@@ -47,31 +47,4 @@ public class TableReader {// Test resource, https://www.sqlitetutorial.net/sqlit
 			e.getStackTrace();
 		}
 	}
-	
-	public static void readScheduleTables() {
-		String tableQuery = "SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'schedule_%';";
-		try (var conn = DbConnection.getConnection()){
-			var stmt = conn.createStatement();
-			var query = stmt.executeQuery(tableQuery);
-			while (query.next()) {
-				String tableName = query.getString("name");
-				System.out.println("Reading table " + tableName);
-				String tableInfo = "SELECT shift_id, employee_id, day_of_week, shift_start, shift_end FROM " + tableName;
-				try (var newStmt = conn.createStatement()){
-					var newQuery = newStmt.executeQuery(tableInfo);
-					while (newQuery.next()) {
-						System.out.printf("%-5s%-5s%-10s%-10s%-s%n",
-								query.getInt("shift_id"),
-								query.getInt("employee_id"),
-								query.getString("day_of_week"),
-								query.getString("shift_start"),
-								query.getString("shift_end"));
-					}
-				}
-			}
-		} catch (SQLException e) {
-			System.err.println("Connection error 4b: " + e.getMessage());
-			e.printStackTrace();
-		}
-	}
 }
